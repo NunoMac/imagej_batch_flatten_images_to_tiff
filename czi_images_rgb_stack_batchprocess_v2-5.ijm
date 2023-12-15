@@ -1,3 +1,5 @@
+//this version sets a limit of 3 images to be processed because of memory contraints
+
 setBatchMode(true); // Enable batch mode to prevent display updates
 
 //USER defines type of interaction in dialog box
@@ -42,15 +44,39 @@ new_subfolder = folder+subfolder+"\\";
 
 File.makeDirectory(new_subfolder);
 
-print("Files will be saved in")
+print("Files will be saved in: "+new_subfolder)
 
 
 
 list = getFileList(folder);
 
+count=0
+
+
 //
 for (i = 0; i < list.length; i++) {
+	print("cycle: "+i);
+	
+	//allow user to interrupt macro if needed
+	interruptMacro = isKeyDown("space");
+    if (interruptMacro == true) {
+        print("interrupted");
+        setKeyDown("none");
+        setBatchMode(false);
+        break;
+    }
+    
+    //limits 3 images at a time
+    //if (count == 4) {
+    //	print("3 images analyzed");
+    //	setBatchMode(false);
+    //	break;
+    //}
+   
+	
     if (endsWith(list[i], ".czi")) { // process only .czi files
+    	count += 1;
+    	print("count: "+count);
     	print("working on file: "+i+1+" of "+list.length);
         file_name = list[i];
         //open(folder+file_name);
@@ -78,12 +104,17 @@ for (i = 0; i < list.length; i++) {
         
         print(IJ.currentMemory());
         print(IJ.freeMemory());
+        
+        run("Close All");
     
 	}
 }
 
 setBatchMode(false); // Disable batch mode at the end of the script
+print("You got the end of misery with the lightness of Alice in Wonderland.")
+print("Congratulations!")
+print("I mean... All your files have been processed and saved.")
 
-//waitForUser;
-//run("Close All");
+waitForUser;
+run("Close All");
 
